@@ -46,7 +46,7 @@ export PUGOING_TIMEOUT="30"
 
 ## 输入方式
 
-`client.py` 支持三种输入方式：
+`client.py` 支持两种输入方式：
 
 ### 1. 传 JSON 文件
 
@@ -54,15 +54,7 @@ export PUGOING_TIMEOUT="30"
 python client.py examples/list_hosts.json
 ```
 
-### 2. 命令行直接传 JSON
-
-适合简单请求，省得先落文件：
-
-```bash
-python client.py '{"path":"/api/xq_host/list","method":"GET"}'
-```
-
-### 3. 从 stdin 读 JSON
+### 2. 从 stdin 读 JSON
 
 ```bash
 echo '{"path":"/api/xq_host/list","method":"GET"}' | python client.py -
@@ -142,9 +134,6 @@ python client.py examples/control_device_by_dvcm.json
 
 - 平台级查询或跨主机场景时，`host_ip` 传 `"global"`
 - 单主机设备控制或上下文理解时，`host_ip` 传实际主机 IP
-- `need_tts` 通常设为 `false`
-
-`client.py` 会自动把 SSE 接口整理成普通 JSON 输出，所以可以直接当普通接口使用。
 
 示例：
 

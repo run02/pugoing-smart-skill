@@ -19,7 +19,7 @@ def load_spec(argv):
     if len(argv) < 2 or argv[1] == "-":
         raw = sys.stdin.read().strip()
         if not raw:
-            die("missing JSON input; pass a file path, a JSON string, or pipe JSON to stdin")
+            die("missing JSON input; pass a file path or pipe JSON to stdin")
         return json.loads(raw)
 
     source = argv[1]
@@ -28,7 +28,7 @@ def load_spec(argv):
         with open(source, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    return json.loads(source)
+    die("input must be a JSON file path or '-' to read JSON from stdin")
 
 
 def resolve_url(spec):
