@@ -62,12 +62,6 @@ python client.py examples/list_hosts.json
 python client.py '{"path":"/api/xq_host/list","method":"GET"}'
 ```
 
-在 PowerShell 里，更推荐直接传简化对象，避免双引号转义：
-
-```bash
-python client.py '{path:/api/xq_host/list,method:GET}'
-```
-
 ### 3. 从 stdin 读 JSON
 
 ```bash

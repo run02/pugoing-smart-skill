@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import json
 import os
-import re
 import sys
 import urllib.error
 import urllib.parse
@@ -16,86 +15,20 @@ def die(message, code=1):
     raise SystemExit(code)
 
 
-def parse_json_input(raw):
-    raw = raw.strip()
-    if not raw:
-        raise json.JSONDecodeError("Expecting value", raw, 0)
-
-    original_error = None
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError as exc:
-        original_error = exc
-
-    # PowerShell often strips quotes from inline JSON arguments and turns
-    # `{"path":"/x","method":"GET"}` into `{path:/x,method:GET}`.
-    # Accept that relaxed top-level object form for quick CLI usage.
-    if not (raw.startswith("{") and raw.endswith("}")):
-        raise original_error
-
-    body = raw[1:-1].strip()
-    if not body:
-        return {}
-
-    result = {}
-    parts = re.split(r"\s*,\s*", body)
-    for part in parts:
-        if not part or ":" not in part:
-            raise original_error
-
-        key, value = part.split(":", 1)
-        key = key.strip().strip("\"'")
-        value = value.strip()
-        if not key:
-            raise original_error
-
-        if not value:
-            result[key] = ""
-            continue
-
-        if value[0] in "\"'":
-            try:
-                result[key] = json.loads(value.replace("'", "\""))
-                continue
-            except json.JSONDecodeError:
-                result[key] = value.strip("\"'")
-                continue
-
-        lowered = value.lower()
-        if lowered == "true":
-            result[key] = True
-        elif lowered == "false":
-            result[key] = False
-        elif lowered == "null":
-            result[key] = None
-        else:
-            try:
-                result[key] = json.loads(value)
-            except json.JSONDecodeError:
-                result[key] = value
-
-    return result
-
-
 def load_spec(argv):
     if len(argv) < 2 or argv[1] == "-":
         raw = sys.stdin.read().strip()
         if not raw:
             die("missing JSON input; pass a file path, a JSON string, or pipe JSON to stdin")
-        return parse_json_input(raw)
+        return json.loads(raw)
 
-    if len(argv) == 2:
-        source = argv[1]
-    else:
-        # Allow users to paste a JSON object directly on the command line
-        # without needing to keep it in a single shell token.
-        source = " ".join(argv[1:]).strip()
+    source = argv[1]
 
     if os.path.isfile(source):
         with open(source, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    return parse_json_input(source)
+    return json.loads(source)
 
 
 def resolve_url(spec):
