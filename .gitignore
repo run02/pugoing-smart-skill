@@ -1,0 +1,27 @@
+# Python cache / bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local environment files
+.env
+.env.*
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build / test artifacts
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+
+# Published package metadata
+_meta.json
